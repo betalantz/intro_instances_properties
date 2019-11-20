@@ -10,7 +10,7 @@ str.object_id
 another_string = "hello world"
 another_string.object_id
 ```
-- Ruby is pure and every expression has to return an object
+- Ruby is a purely object oriented language and every expression has to return an object
 - "hello world" is an expression until we hit enter, then Ruby must return an object
 - Show object primitives
 ```ruby
@@ -19,7 +19,7 @@ Array.new
 Hash.new
 Integer.new
 ```
-- oops, we can create new integers, but we can show that they are static objects
+- oops, we can't create new integers, but we can show that they are static objects
 ```ruby
 8.object_id
 8.object_id
@@ -56,7 +56,7 @@ snoopy.methods
 (dot notation: term on left is *receiver* `snoopy`, and term on right is *sender* which sends a message `methods` to the receiver)
 "Snoopy, tell me your methods."
 - Snoopy can do a lot right out of the box because it is an object, so it inherits a base set of functionality which all Ruby objects share (nothing specific to Dog yet)
-- We have already use `.object_id` to see where an object lives in memory
+- We have already used `.object_id` to see where an object lives in memory
 - We want to make our dogs be able to do things that no other objects can do
 - done through adding methods
 
@@ -92,10 +92,10 @@ Can I require all Dogs in general to bark?
 - `fido` is just a variable name
 - I could just as well write `x = Dog.new`
 - variables are like labels we as programmers put on objects so we can refer to and manipulate them
-- variables mean nothing to Ruby
-- our `fido` object is not named "Fido"
-- our Dogs don't even have the concept yet of having a name
-- Ruby can't infer "oh, the programmer created a Dog object with the variable `fido` so maybe I should give that object a `fido` property
+- variables don't inherently _mean_ anything to Ruby, they're just labels
+- our `fido` Dog object does not yet have the property of a name "Fido"
+- our Dogs don't even have the concept yet of having a name property (or characteristic)
+- Ruby can't infer "oh, the programmer created a Dog object assigned to the variable `fido` so maybe I should give that object a `fido` property"
 
 _004_attributes_and_instances.rb_
 ```ruby
@@ -106,7 +106,7 @@ class Dog
 end
 
 foo = Dog.new
-# How do I give do "x" a name?
+# How do I give dog "x" a name?
 
 # Methods = Behaviors
 # Variables = Data
@@ -119,11 +119,12 @@ foo.name #=> "FooDog"
 ```
 (Good definition of Object: all of the data and all of the behaviors needed in order to accomplish a job)
 
-- since all we can do with classes is give them methods, however we are going to give dogs names, it will be through methods
+- since all we can do with classes is give them methods, whatever we need to do to give dogs names, it will be through methods
 - `foo.name=` is still calling a method on an object
 - in Ruby, we are _*always*_ calling methods on objects
 
 _irb_
+_[I feel like the next 7 lines could be edited out. Interesting, but possibly confusing to beginners.]_
 ```ruby
 1 + 1
 # What's really happening is:
@@ -158,7 +159,7 @@ end
 ```
 - and run in irb
 - we've just written a "writer" or a "setter" method, as the purpose of the method is to set data on our object
-- you don't have to remember that now, we'll cover in depth later
+    - you don't have to remember that now, we'll cover in depth later
 - now we need our "reader" (or "getter") method
 - we're going to run into an interesting problem here
 
@@ -184,11 +185,12 @@ foo.name
 ```
 `undefined local variable 'the_name'`
 
-- we're running up against the limitation of the most restricted, limited scope
+- we're running up against the limitation of the most restricted, limited scope: local scope
 - let's go to the opposite extreme of the variable with the most expansive scope, global variables
 - CAVEAT: you will 99.9% NEVER use global variables in your Ruby code, reserved for the Interpreter only
 - if you don't know what that means, you shouldn't use them
 - but we'll illustrate now why not
+_004_attributes_and_instances.rb_
 ```ruby
 class Dog
     #Body of the Dog class
@@ -211,7 +213,7 @@ class Dog
 
 end
 ```
-_can clear irb by relaunching and copying in def_
+_can clear irb by relaunching and copying in Dog class_
 ```ruby
 fido = Dog.new
 fido.name= "Fido"
@@ -225,9 +227,9 @@ Hey, what's so bad about global variables? Looks good so far!
 ```ruby
 fido.name
 ```
-Ooops, not our expected behavior
+- Ooops, not our expected behavior
 - there is only one global variable `$the_name` which all of our instances have access to
-- value gets overwritten by each instance which references it
+- value gets overwritten by each instance which reassigns it
 - what we really need is a variable which is unique to each instance of a dog, but which is accessible by every method in that instance
 - a variable whose scope is not just one method, but neither is it the entire program
 
@@ -285,12 +287,14 @@ snoopy.bark
 Instance variables are a way to give properties to objects instantiated from a class
 also called _internal state_ because the properties of an object are private until exposed
 
-NB: it's convention to name our getter and setter methods after the variables they access (because why be obtuse?) but it's not required
+- NB: it's convention to name our getter and setter methods after the variables they access (because why be obtuse? programming is already hard enough) but it's not required by Ruby for the code to run/execute 
 
 # Attr_accessor
-_first can recap what we've covered so far_
+_if there's time, this is a good place to quickly recap what's been covered so far_
 - normalize `@the_name` to `@name`
-- continues to add readers and writers for `@coat_color` and `@breed`
+- continue to add readers and writers for `@coat_color` and `@breed`
+
+_004_attributes_and_instances.rb_
 ```ruby
 class Dog
     def bark 
@@ -335,10 +339,11 @@ fido.name
 fido.coat_color
 fido.breed
 ```
-This is such a common pattern that Ruby gives us a shortcut to creating our vanilla readers and writers: `attr_accessor`
+- This is such a common pattern that Ruby gives us a shortcut to creating our vanilla readers and writers: `attr_accessor`
 This is a macro--a method which creates other methods
-I'm showing the syntax here, that we pass an argument to attr_accessor as a symbol
+- I'm showing the syntax here, that we pass an argument to attr_accessor as a symbol
 
+_004_attributes_and_instances.rb_
 ```ruby
 class Dog
 
@@ -346,7 +351,7 @@ class Dog
     # attr_accessor :name is equivalent to the code below
     # attr_accessor adds 2 instance methods to our objects, a reader and a writer.
     # Dog#name method for the reader, and Dog#name= for the writer.
-    # These methods with read/write to an instance variable @name
+    # These methods will read/write to an instance variable @name
 
     # def name=(name) 
     #     @name = name
@@ -363,7 +368,8 @@ class Dog
 end
 ```
 _implement the above in a fresh irb_
-_add a new line `attr_accessor :breed`
+
+_add a new line `attr_accessor :breed`_
 - How many methods get added? 2, Dog#breed and Dog#breed=
     - instance variables can be added 'on the fly' and don't have to be declared initially
 - show multi-argument attr_accessor `attr_accessor :breed, :coat_color, :age, :gender`
@@ -384,6 +390,8 @@ attr_writer :recent_meal
 # Initialize
 
 An object has a lifecycle: it's born, has events happen to it, and we can tap in to those events
+
+_005_initialize.rb_
 ```ruby
 class Dog
     attr_reader :name
@@ -395,14 +403,16 @@ fido.name = "Fido" #=> NoMethod error, why?
 # What I want to be able to do is pass the name as an argument at the moment a new dog is created
 fido = Dog.new("Fido") #=> ArgumentError
 ```
-The moment in the lifecycle we're concerned with here is the moment a dog is born, i.e. the moment an object is instantiated, or initialized
-This is also going to answer the question of how we can give a dog a name if we only create a reader for that attribute
-Looking at the error message here tells us a lot: initialize got 1 argument when it takes 0
-The initialize method is a type of:
-- hook
-- callback
-- lifecycle event
-Whenever we call `new` on a class (whenever an object is 'born'), the class itself calls `initialize` on the new object
+- The moment in the lifecycle we're concerned with here is the moment a dog is born, i.e. the moment an object is *instantiated*, or *initialized*
+- This is also going to answer the question of how we can give a dog a name if we only create a reader for that attribute
+- Looking at the error message here tells us a lot: initialize got 1 argument when it takes 0
+- The initialize method is a type of:
+    - hook
+    - callback
+    - lifecycle event
+- Whenever we call `new` on a class (whenever an object is 'born'), the class itself calls `initialize` on the new object
+
+_005_initialize.rb_
 ```ruby
 class Dog
     attr_reader :name
@@ -416,7 +426,7 @@ end
 ```
 _implement with `Dog.new` in irb_
 
-If I want `Dog.new("Fido")` to accept an argument, I just have to also give `initialize` an argument
+- If I want `Dog.new("Fido")` to accept an argument, I just have to also give `initialize` an argument
 
 ```ruby
 class Dog
@@ -431,33 +441,37 @@ class Dog
 
 end
 ```
-Now `initialize` receives a value we'll locally call `name`, and we can assign that value to the instance variable `@name`
-Since `initialize` is an instance method, we have access to instance variables, like `@name` and I can cast the local variable into the instance variable, which I know can then be read.
-I know that `@name` is available because I've given `attr_reader` the symbol `:name` so according to Ruby conventions, I know there is already a reader method which exposes an instance variable `@name`
+- Now `initialize` receives a value we'll locally call `name`, and we can assign that value to the instance variable `@name`
+- Since `initialize` is an instance method, we have access to instance variables, like `@name` and I can cast the local variable into the instance variable, which I know can then be read.
+- I know that `@name` is available because I've given `attr_reader` the symbol `:name` so according to Ruby conventions, I know there is already a reader method which exposes an instance variable `@name`
 ```ruby
 def name
     @name
 end
 ```
-So when I write my initialize method, I hook into these conventions, and should get my desired behavior
+- So when I write my initialize method, I hook into these conventions, and should get my desired behavior
 
 _demo in irb_
 ```ruby
 fido = Dog.new #=> opposite ArgumentError
 ```
-Now I get the opposite type of error as before
-Because I gave  `initialize` and argument, I _must_ invoke the constructor with the same number of arguments (we call `Dog.new` a constructor because it constructs new objects for us)
-So I can no longer create a dog without supplying a name for a dog
+- Now I get the opposite type of error as before
+- Because I gave  `initialize` and argument, I _must_ invoke the *constructor* with the same number of arguments (we call `Dog.new` a constructor because it constructs new objects for us)
+- So I can no longer create a dog without supplying a name for a dog
 ```ruby
 fido = Dog.new("Fido")
 fido.name
 fido.name = "Rover" #=> NoMethod Error
 ```
-So that's `initialize`
-and we commonly use intialize to set properties on an object that we *don't* want to be able to change later in the object's lifecycle
-in that sense, `initialize` can be thought of as a single-use setter/writer, invoked upon object instantiation
-But we can also set properties not passed in through the constructor
+- So that's `initialize`
+- we commonly use intialize to set properties on an object that we *don't* want to be able to change later in the object's lifecycle
+- in that sense, `initialize` can be thought of as a single-use setter/writer, invoked upon object instantiation
 
+_[I think it would be ok to end here if short on time; the following information is supplemental]_
+
+- We can also set properties not passed in through the constructor
+
+_005_initialize.rb_
 ```ruby
 class Dog
 
@@ -476,14 +490,14 @@ class Dog
 
 end
 ```
-Here, `age` acts like a kind of dynamic custom reader
-We've set `@born_on` as a static property assigned on object instantiation
-but we've added some logic to `#age` that makes it dynamic
+- Here, `age` acts like a kind of dynamic custom reader
+- We've set `@born_on` as a static property assigned on object instantiation
+- but we've added some logic to `#age` that makes it dynamic
 ```ruby
 snoopy = Dog.new("Snoopy")
 snoopy.age
 snoopy.age
 ```
-Notice that `@born_on` is never exposed by any methods, so I only have access to it 'inside' of my object
-When I call methods on an object, I'm on the 'outside' and can only use the interfaces presented by the object to interact with it
-i.e. The only insight I have into the internal state of the object is through the methods I can invoke on the object and the properties they expose.
+- Notice that `@born_on` is never exposed by any methods, so I only have access to it 'inside' of my object
+- When I call methods on an object, I'm on the 'outside' and can only use the interfaces presented by the object to interact with it
+- i.e. The only insight I have into the internal state of the object is through the methods I can invoke on the object and the properties they expose.
