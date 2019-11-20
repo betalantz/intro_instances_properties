@@ -501,3 +501,6 @@ snoopy.age
 - Notice that `@born_on` is never exposed by any methods, so I only have access to it 'inside' of my object
 - When I call methods on an object, I'm on the 'outside' and can only use the interfaces presented by the object to interact with it
 - i.e. The only insight I have into the internal state of the object is through the methods I can invoke on the object and the properties they expose.
+
+
+_This script is largely based on a video by Avi Flombaum, [Intro to Object Orientation (2/8/16)](https://www.youtube.com/watch?v=UysgBTrJoTc)_
