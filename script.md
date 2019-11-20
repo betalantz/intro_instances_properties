@@ -467,6 +467,32 @@ fido.name = "Rover" #=> NoMethod Error
 - we commonly use intialize to set properties on an object that we *don't* want to be able to change later in the object's lifecycle
 - in that sense, `initialize` can be thought of as a single-use setter/writer, invoked upon object instantiation
 
+- we can also program our `initialize` method to _*optionally*_ receive an argument when upon object instantiation
+
+_005_initialize.rb_
+```ruby
+class Dog
+
+    attr_reader :name
+
+    def initialize(name = nil) # We can assign a default value to the incoming argument
+        puts "A new dog was just born!!!"
+        @name = name
+        @birthday = Time.now
+    end
+
+end
+```
+- By setting a default value for the argument being received by `initialize`, we make it optional whether Dogs get created with a name or not
+- If we don't pass any argument to `initialize`, the value of `@name` will be `nil`, but we can still instantiate objects
+```ruby
+fluffy = Dog.new
+fluffy.name #=> nil
+fluffy.name = "Fluffy" #=> NoMethod error
+sparky = Dog.new("Sparky")
+sparky.name #=> "Sparky"
+```
+
 _[I think it would be ok to end here if short on time; the following information is supplemental]_
 
 - We can also set properties not passed in through the constructor
